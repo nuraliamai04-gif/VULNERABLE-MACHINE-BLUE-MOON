@@ -75,7 +75,9 @@ sudo netdiscover
 * 192.168.56.100 → Unknown host
 * 192.168.56.106 → Target (BlueMoon)
 
-📸 **Screenshot: netdiscover output**
+### 📸 Screenshot:
+
+![Netdiscover](screenshots/01_netdiscover.png)
 
 ---
 
@@ -85,13 +87,15 @@ sudo netdiscover
 ip a
 ```
 
-📸 **Screenshot: Kali IP address**
+### 📸 Screenshot:
+
+![IP Address](screenshots/02_ip_address.png)
 
 ---
 
 ### Analysis:
 
-> “Using netdiscover, multiple hosts were identified on the network. The attacker machine was identified as 192.168.56.107, while potential targets were 192.168.56.100 and 192.168.56.106.”
+Using netdiscover, multiple hosts were identified on the network. The attacker machine was identified as 192.168.56.107, while potential targets were 192.168.56.100 and 192.168.56.106.
 
 ---
 
@@ -118,13 +122,15 @@ nmap -sC -sV 192.168.56.106
 | 22   | SSH     | OpenSSH 7.9   |
 | 80   | HTTP    | Apache 2.4.38 |
 
-📸 **Screenshot: Nmap scan result**
+### 📸 Screenshot:
+
+![Nmap](screenshots/03_nmap_target.png)
 
 ---
 
 ### Analysis:
 
-> “Nmap scanning revealed multiple open ports including FTP (21), SSH (22), and HTTP (80), indicating several possible attack vectors.”
+Nmap scanning revealed multiple open ports including FTP (21), SSH (22), and HTTP (80), indicating several possible attack vectors.
 
 ---
 
@@ -139,10 +145,11 @@ http://192.168.56.106
 ### Observation:
 
 * Simple page
-* Message:
-  **“Are You Ready To Play With Me…!”**
+* Message: *“Are You Ready To Play With Me…!”*
 
-📸 **Screenshot: Website page**
+### 📸 Screenshot:
+
+![Website](screenshots/04_website.png)
 
 ---
 
@@ -157,7 +164,9 @@ nikto -h http://192.168.56.106
 * Missing security headers
 * Outdated Apache version
 
-📸 **Screenshot: Nikto output**
+### 📸 Screenshot:
+
+![Nikto](screenshots/05_nikto.png)
 
 ---
 
@@ -171,7 +180,9 @@ gobuster dir -u http://192.168.56.106 -w /usr/share/wordlists/dirb/common.txt
 
 * No significant directories found
 
-📸 **Screenshot: Gobuster output**
+### 📸 Screenshot:
+
+![Gobuster](screenshots/06_gobuster.png)
 
 ---
 
@@ -191,7 +202,9 @@ anonymous / anonymous
 
 * ❌ Access denied
 
-📸 **Screenshot: FTP login attempt**
+### 📸 Screenshot:
+
+![FTP](screenshots/07_ftp_login.png)
 
 ---
 
@@ -201,7 +214,7 @@ anonymous / anonymous
 * FTP → restricted
 * Directories → none
 
-> ❗ Web and FTP were not viable entry points
+**Conclusion:** Web and FTP were not viable entry points.
 
 ---
 
@@ -222,13 +235,16 @@ hydra -l root -P /usr/share/wordlists/rockyou.txt 192.168.56.106 ssh
 * ~14 million attempts
 * Estimated time: ~44 days
 
-📸 **Screenshot: Hydra output**
+### 📸 Screenshots:
+
+![Hydra 1](screenshots/08_hydra.png)
+![Hydra 2](screenshots/08_hydra_2.png)
 
 ---
 
 ### Analysis:
 
-> “Initial brute-force attack on SSH was found to be inefficient due to large password space. Further enumeration was conducted to identify alternative entry points.”
+Initial brute-force attack on SSH was found to be inefficient due to large password space. Further enumeration was conducted to identify alternative entry points.
 
 ---
 
@@ -241,13 +257,17 @@ hydra -l root -P /usr/share/wordlists/rockyou.txt 192.168.56.106 ssh
 <img src=".starts.jpeg">
 ```
 
+### 📸 Screenshot:
+
+![Page Source](screenshots/09_page_source.png)
+
 ---
 
 ### Key Finding:
 
-* Files start with `.` (hidden files)
+Files start with `.` (hidden files)
 
-> ❗ Indicates potential hidden or sensitive data
+This indicates potential hidden or sensitive data.
 
 ---
 
@@ -258,7 +278,9 @@ wget http://192.168.56.106/.blue.jpg
 wget http://192.168.56.106/.starts.jpeg
 ```
 
-📸 **Screenshot: Downloaded files**
+### 📸 Screenshot:
+
+![Hidden Files](screenshots/10_hidden_files.png)
 
 ---
 
@@ -270,12 +292,15 @@ wget http://192.168.56.106/.starts.jpeg
 * exiftool
 * binwalk
 
-### Results:
+### 📸 Screenshots:
 
-* No visible hidden data
-* No embedded files
+![Strings](screenshots/11_strings.png)
 
-📸 **Screenshots: analysis outputs**
+![Exiftool 1](screenshots/12_exiftool.png)
+![Exiftool 2](screenshots/12_exiftool_2.png)
+
+![Binwalk 1](screenshots/13_binwalk.png)
+![Binwalk 2](screenshots/13_binwalk_2.png)
 
 ---
 
@@ -289,20 +314,20 @@ wget http://192.168.56.106/.starts.jpeg
 steghide info .blue.jpg
 ```
 
----
-
 ### Result:
 
 * Embedded data detected
 * Passphrase required
 
-📸 **Screenshot: steghide output**
+### 📸 Screenshot:
+
+![Steghide](screenshots/14_steghide.png)
 
 ---
 
 ### Analysis:
 
-> “Steganography analysis confirmed the presence of hidden data inside image files. However, the correct passphrase has not yet been identified.”
+Steganography analysis confirmed the presence of hidden data inside image files. However, the correct passphrase has not yet been identified.
 
 ---
 
@@ -319,8 +344,7 @@ steghide info .blue.jpg
 
 ### Observation:
 
-> ❗ No direct credential found yet
-> ❗ Indicates puzzle-based or hint-driven attack path
+No direct credentials found, indicating a puzzle-based or hint-driven attack path.
 
 ---
 
@@ -351,8 +375,8 @@ steghide info .blue.jpg
 
 ### Gaining Access:
 
-* Strong passwords
-* Disable brute-force attacks
+* Enforce strong passwords
+* Implement account lockout policies
 
 ---
 
